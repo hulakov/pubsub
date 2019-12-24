@@ -47,16 +47,16 @@ type topic struct {
 	tail *message
 }
 
-type PubSub struct {
+type pubSub struct {
 	subscribers map[string]*subscriber
 	topics      map[string]*topic
 }
 
-func NewPubSub() PubSub {
-	return PubSub{subscribers: make(map[string]*subscriber), topics: make(map[string]*topic)}
+func NewPubSub() pubSub {
+	return pubSub{subscribers: make(map[string]*subscriber), topics: make(map[string]*topic)}
 }
 
-func (pubsub *PubSub) Publish(topicName, jsonBody string) error {
+func (pubsub *pubSub) Publish(topicName, jsonBody string) error {
 	t, ok := pubsub.topics[topicName]
 	if !ok {
 		// topic doesn't exists -> no subscribers -> nobody will receive a message
@@ -71,7 +71,7 @@ func (pubsub *PubSub) Publish(topicName, jsonBody string) error {
 	return nil
 }
 
-func (pubsub *PubSub) Subscribe(topicName, subscriberName string) error {
+func (pubsub *pubSub) Subscribe(topicName, subscriberName string) error {
 	// get trailing empty message from topic (if no such topic it'll be created)
 	var m *message
 	t, ok := pubsub.topics[topicName]
@@ -99,7 +99,7 @@ func (pubsub *PubSub) Subscribe(topicName, subscriberName string) error {
 	return nil
 }
 
-func (pubsub *PubSub) Unsubscribe(topicName, subscriberName string) error {
+func (pubsub *pubSub) Unsubscribe(topicName, subscriberName string) error {
 	// get subscriber
 	s, ok := pubsub.subscribers[subscriberName]
 	if !ok {
@@ -123,7 +123,7 @@ func (pubsub *PubSub) Unsubscribe(topicName, subscriberName string) error {
 	return nil
 }
 
-func (pubsub *PubSub) Poll(topicName, subscriberName string) (*string, error) {
+func (pubsub *pubSub) Poll(topicName, subscriberName string) (*string, error) {
 	// get subscriber
 	s, ok := pubsub.subscribers[subscriberName]
 	if !ok {
